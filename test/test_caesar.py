@@ -1,0 +1,56 @@
+from ciphers.monosub.caesar import (
+    encipher_caesar,
+    decipher_caesar,
+    brute_force_caesar,
+    crib_caesar,
+    mono_fitness_caesar,
+    additive_inverse,
+)
+
+if __name__ == "__main__":
+    testing = "00000"
+    testing = [int(i) for i in testing]
+
+    with open("testCaesar.txt", "r") as f:
+        tests = f.read().split("\n\n")
+
+    tests[0] = tests[0].replace("\n", " ")
+    tests[2] = tests[2].split()
+    tests = [
+        test.replace("\n", "") if isinstance(test, str) else test for test in tests
+    ]
+
+    if testing[0]:
+        print(528147 + 790378 % 62)
+        print(72177 - 162737 % 81)
+        for mod in 18, 19:
+            for element in range(1, mod + 1):
+                if additive_inverse(element, mod) == element:
+                    print(mod, "/ 2 =", element)
+
+    if testing[1]:
+        print(encipher_caesar(tests[0].upper(), 11))
+        print(decipher_caesar(tests[1], 15))
+
+    if testing[2]:
+        for test in tests[2]:
+            brute_force_caesar(test)
+
+    if testing[3]:
+        crib_caesar(tests[3], "CUSTOM")
+        cribs = "VICTORY SPAIN DISCO EUROVISION".split()
+        for crib in cribs:
+            print()
+            crib_caesar(tests[4], crib)
+
+    if testing[4]:
+        longs = tests[5:]
+        shorts = tests[2]
+        for test in longs:
+            mono_fitness_caesar(test, True)
+        for test in shorts:
+            mono_fitness_caesar(test, True)  # fails
+        for test in longs:
+            mono_fitness_caesar(test)
+        for test in shorts:
+            mono_fitness_caesar(test)  # fails (but second one should succed?)
