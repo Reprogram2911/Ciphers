@@ -1,5 +1,5 @@
 from ciphers.analysis.randomness import entropy, ioc, find_block_size
-from ciphers.test.test_fitness import test_function, average_corpus
+from ciphers.test.analysis.test_fitness import test_function, average_corpus
 
 
 def find_block_size2(text):
