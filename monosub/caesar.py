@@ -2,13 +2,13 @@ import matplotlib.pyplot as plt
 
 from ciphers.analysis import (
     ALPHABET,
-    tetra_fitness,
+    get_freq,
     mono_fitness_chi2,
     mono_fitness_cos,
-    get_freq,
     split_into_ngrams,
+    tetra_fitness,
 )
-from ciphers.monosub.mono_sub import encipher_mono_sub, decipher_mono_sub
+from ciphers.monosub.mono_sub import decipher_mono_sub, encipher_mono_sub
 
 
 def additive_inverse(number, mod):
@@ -55,9 +55,11 @@ def output_caesar(ciphertext, key):
 
 def brute_force_caesar(ciphertext):
     expected = get_freq(4)
-    poss_texts = [decipher_caesar(ciphertext, k) for k in range(26)]
-    fitnesses = [tetra_fitness(poss_text, expected) for poss_text in poss_texts]
-    key = fitnesses.index(max(fitnesses))
+    poss_texts = {key: decipher_caesar(ciphertext, key) for key in range(26)}
+    fitnesses = {
+        key: tetra_fitness(poss_text, expected) for key, poss_text in poss_texts.items()
+    }
+    key = max(fitnesses, key=fitnesses.get)
     output_caesar(ciphertext, key)
 
 
@@ -72,7 +74,7 @@ def crib_caesar(ciphertext, crib):
     for ngram in ngrams:
         shifts = []
         for letters in zip(ngram, crib):
-            i, j = (ALPHABET.index(letter) for letter in letters)
+            i, j = letter_to_num(letters)
             shift = (i - j) % 26
             shifts.append(shift)
         if all_equal(shifts):

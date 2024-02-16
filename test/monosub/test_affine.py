@@ -1,15 +1,20 @@
 from random import randint
 
-from ciphers.analysis import strip, ALPHABET
+from ciphers.analysis import ALPHABET, split_into_blocks, strip
+from ciphers.monosub import letter_to_num
 from ciphers.monosub.affine import (
+    brute_force_affine,
+    crib_affine,
+    decipher_affine,
+    encipher_affine,
     gcd,
     lcm,
     lcm2,
+    mono_fitness_affine,
     multiplicative_inverse,
+    solve_for_a,
+    solve_for_b,
     valid_key_affine,
-    encipher_affine,
-    decipher_affine,
-    brute_force_affine,
 )
 
 
@@ -39,8 +44,12 @@ def generate_extended_alphabet(a, b):
     return output
 
 
+def flatten_list(ls):
+    return [e for l in ls for e in l]
+
+
 if __name__ == "__main__":
-    testing = "0000000"
+    testing = "0000000001"
     testing = [int(i) for i in testing]
 
     with open("testAffine.txt", "r") as f:
@@ -103,3 +112,21 @@ if __name__ == "__main__":
 
     if testing[6]:
         brute_force_affine(tests[2])
+
+    if testing[7]:
+        crib, ngram = letter_to_num("CRIB"), letter_to_num("KFIT")
+        a = solve_for_a(crib, ngram)
+        print(a)  # 17
+        print(solve_for_b(crib, ngram, a))  # 2
+
+    if testing[8]:
+        crib_affine(tests[3], "CRIB")
+
+    if testing[9]:
+        mono_fitness_affine(tests[4])
+
+        transposed = mono_fitness_affine(tests[5])
+        output = []
+        for block in split_into_blocks(transposed, 3):
+            output.extend(list(reversed(block)))
+        print("".join(output))
