@@ -2,10 +2,7 @@ from math import log
 
 import matplotlib.pyplot as plt
 
-from ciphers.analysis.ngram_frequency import (
-    ngram_frequencies,
-    mono_frequencies,
-)
+from ciphers.analysis.ngram_frequency import ngram_frequencies, mono_frequencies
 
 
 def ioc(text, n=1):

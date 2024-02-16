@@ -3,11 +3,24 @@ from math import log
 
 import matplotlib.pyplot as plt
 
-from ciphers.analysis.corpora import CORPUS_FP, get_file
-from ciphers.analysis.word_lists import write_dict
+from ciphers.analysis.corpora import get_file, CORPUS_FP, get_input, output
+from ciphers.analysis.word_lists import read_dict, dict_to_str
 
 MONOFREQ_FP = get_file("monoFreq.json")
 TETRAFREQ_FP = get_file("tetraFreq.json")
+
+
+def get_freq(n):
+    match n:
+        case 1:
+            fp = MONOFREQ_FP
+        case 4:
+            fp = TETRAFREQ_FP
+        case _:
+            raise ValueError("1-gram or 4-gram frequencies only")
+
+    with open(fp, "r") as f:
+        return read_dict(f)
 
 
 def split_into_ngrams(text, n):
@@ -18,7 +31,7 @@ def split_into_blocks(text, n):
     return [text[i : i + n] for i in range(0, len(text) - n + 1, n)]
 
 
-def ngram_frequencies(text, n, overlapping=True, divide=True):
+def ngram_frequencies(text, n, overlapping=True, divide=True, s=False):
     if overlapping:
         ngrams = split_into_ngrams(text, n)
     else:
@@ -28,15 +41,17 @@ def ngram_frequencies(text, n, overlapping=True, divide=True):
     freq = dict(freq)
     if divide:
         freq = {k: v / len(text) for k, v in freq.items()}
+    if s:
+        return dict_to_str(freq)
     return freq
 
 
-def mono_frequencies(text):
-    return ngram_frequencies(text, 1)
+def mono_frequencies(text, s=False):
+    return ngram_frequencies(text, 1, s)
 
 
-def tetra_frequencies(text, logarithm=False):
-    freq = ngram_frequencies(text, 4)
+def tetra_frequencies(text, logarithm=False, s=False):
+    freq = ngram_frequencies(text, 4, s)
     if logarithm:
         freq = {k: log(v) for k, v in freq.items()}
     return freq
@@ -50,22 +65,20 @@ def plot_dict(dictionary):
     plt.close()
 
 
-def analyse_frequencies(source, mono_dest=None, tetra_dest=None):
-    with open(source, "r") as f:
-        text = f.read().replace(" ", "")
+def analyse_frequencies(source=None, mono_dest=None, tetra_dest=None):
+    text = get_input(source).replace(" ", "")
 
     mono_freq = mono_frequencies(text)
     plot_dict(dict(sorted(mono_freq.items())))
     plot_dict(mono_freq)
 
-    if mono_dest is not None:
-        with open(mono_dest, "w") as f:
-            write_dict(mono_freq, f)
+    mono_s = dict_to_str(mono_freq)
+    output(mono_s, mono_dest)
 
     if tetra_dest is not None:
-        tetra_freq = tetra_frequencies(text)
+        tetra_s = tetra_frequencies(text, s=True)
         with open(tetra_dest, "w") as f:
-            write_dict(tetra_freq, f)
+            f.write(tetra_s)
 
 
 if __name__ == "__main__":

@@ -3,7 +3,7 @@ from time import perf_counter
 
 import matplotlib.pyplot as plt
 
-from ciphers.analysis import CORPUS_FP, MONOFREQ_FP, TETRAFREQ_FP, read_dict, ALPHABET
+from ciphers.analysis import ALPHABET, get_corpus, get_freq
 from ciphers.analysis.fitness import (
     chi_squared,
     mono_fitness_chi2,
@@ -11,9 +11,7 @@ from ciphers.analysis.fitness import (
     tetra_fitness,
 )
 
-with open(CORPUS_FP, "r") as f:
-    CORPUS = f.read().replace(" ", "")
-
+CORPUS = get_corpus().replace(" ", "")
 
 def average_corpus(sublength, function, *args):
     length = len(CORPUS)
@@ -59,10 +57,7 @@ def test_function(label, function, random, *args):
 
 
 def test_fitness_function(function, n=1, random=False):
-    filenames = {1: MONOFREQ_FP, 4: TETRAFREQ_FP}
-    filename = filenames[n]
-    with open(filename, "r") as f:
-        expected = read_dict(f)
+    expected = get_freq(n)
     test_function("Fitness", function, random, expected)
 
 

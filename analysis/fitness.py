@@ -1,9 +1,6 @@
 from math import log, sqrt
 
-from ciphers.analysis.ngram_frequency import (
-    mono_frequencies,
-    split_into_ngrams,
-)
+from ciphers.analysis.ngram_frequency import mono_frequencies, split_into_ngrams
 
 
 def chi_squared(measured, expected):

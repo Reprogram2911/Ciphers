@@ -12,6 +12,11 @@ def get_file(filename):
 CORPUS_FP = get_file("corpus.txt")
 
 
+def get_corpus():
+    with open(CORPUS_FP, "r") as f:
+        return f.read()
+
+
 def standardise_whitespace(text):
     words = text.split()
     return " ".join(words)
@@ -25,16 +30,29 @@ def strip(text):
     return standardise_whitespace(text)
 
 
-def function_on_file(function, source, destination):
+def get_input(source):
+    if source is None:
+        print("Input:")
+        return input()
     with open(source, "r") as f:
-        arg = f.read()
+        return f.read()
 
+
+def output(s, dest):
+    if dest is None:
+        print("Output:")
+        print(s)
+    else:
+        with open(dest, "w") as f:
+            f.write(s)
+
+
+def perform_function(function, source=None, destination=None):
+    arg = get_input(source)
     result = function(arg)
-
-    with open(destination, "w") as f:
-        f.write(result)
+    output(result, destination)
 
 
 if __name__ == "__main__":
-    function_on_file(strip, get_file("brownCorpus.txt"), CORPUS_FP)
+    perform_function(strip, get_file("brownCorpus.txt"), CORPUS_FP)
     # Brown corpus sourced from http://www.sls.hawaii.edu/bley-vroman/brown.txt

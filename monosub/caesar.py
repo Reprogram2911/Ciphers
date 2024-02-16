@@ -5,10 +5,8 @@ from ciphers.analysis import (
     tetra_fitness,
     mono_fitness_chi2,
     mono_fitness_cos,
-    read_dict,
-    split_into_ngrams,
-    MONOFREQ_FP,
-    TETRAFREQ_FP,
+    get_freq,
+    split_into_ngrams
 )
 from ciphers.monosub.mono_sub import encipher_mono_sub, decipher_mono_sub
 
@@ -56,8 +54,7 @@ def output_caesar(ciphertext, key):
 
 
 def brute_force_caesar(ciphertext):
-    with open(TETRAFREQ_FP, "r") as f:
-        expected = read_dict(f)
+    expected = get_freq(4)
     poss_texts = [decipher_caesar(ciphertext, k) for k in range(26)]
     fitnesses = [tetra_fitness(poss_text, expected) for poss_text in poss_texts]
     key = fitnesses.index(max(fitnesses))
@@ -88,8 +85,7 @@ def crib_caesar(ciphertext, crib):
 
 
 def mono_fitness_caesar(ciphertext, chi2=False):
-    with open(MONOFREQ_FP, "r") as f:
-        expected = read_dict(f)
+    expected = get_freq(1)
     poss_texts = [decipher_caesar(ciphertext, k) for k in range(26)]
     if chi2:
         fitnesses = [mono_fitness_chi2(poss_text, expected) for poss_text in poss_texts]

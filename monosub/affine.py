@@ -1,4 +1,4 @@
-from ciphers.analysis import ALPHABET, TETRAFREQ_FP, read_dict, tetra_fitness
+from ciphers.analysis import ALPHABET, get_freq, tetra_fitness
 from ciphers.monosub.caesar import all_equal
 from ciphers.monosub.mono_sub import encipher_mono_sub, decipher_mono_sub
 
@@ -88,8 +88,7 @@ def output_affine(ciphertext, a, b):
 
 
 def brute_force_affine(ciphertext):
-    with open(TETRAFREQ_FP, "r") as f:
-        expected = read_dict(f)
+    expected = get_freq(4)
     poss_texts = {
         (a, b): decipher_affine(ciphertext, a, b)
         for a in range(26)

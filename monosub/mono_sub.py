@@ -2,14 +2,12 @@ from ciphers.analysis import (
     ALPHABET,
     ioc,
     mono_fitness,
-    read_dict,
-    MONOFREQ_FP,
+    get_freq,
 )
 
 
 def mono_sub_likely(ciphertext):
-    with open(MONOFREQ_FP, "r") as f:
-        expected = read_dict(f)
+    expected = get_freq(1)
     similar_ioc = abs(ioc(ciphertext) - 1.73) < 0.2
     low_mono_fitness = abs(mono_fitness(ciphertext, expected) - 0.96) > 0.2
     return similar_ioc and low_mono_fitness
