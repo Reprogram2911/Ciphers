@@ -13,6 +13,7 @@ from ciphers.analysis.fitness import (
 
 CORPUS = get_corpus().replace(" ", "")
 
+
 def average_corpus(sublength, function, *args):
     length = len(CORPUS)
     num_times = 1000

@@ -6,7 +6,7 @@ from ciphers.analysis import (
     mono_fitness_chi2,
     mono_fitness_cos,
     get_freq,
-    split_into_ngrams
+    split_into_ngrams,
 )
 from ciphers.monosub.mono_sub import encipher_mono_sub, decipher_mono_sub
 
