@@ -31,7 +31,7 @@ def generate_alphabet_caesar(number):
     return output
 
 
-def generate_alphabet_caesar2(number):
+def generate_alphabet_caesar_2(number):
     return ALPHABET[number:] + ALPHABET[:number]
 
 

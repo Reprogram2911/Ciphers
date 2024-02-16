@@ -1,6 +1,5 @@
-import string
 from pathlib import Path
-
+import string
 
 ALPHABET = string.ascii_uppercase
 
@@ -34,8 +33,12 @@ def get_input(source):
     if source is None:
         print("Input:")
         return input()
-    with open(source, "r") as f:
-        return f.read()
+
+    if source.endswith(".txt"):
+        with open(source, "r") as f:
+            return f.read()
+
+    return source
 
 
 def output(s, dest):

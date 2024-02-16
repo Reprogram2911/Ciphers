@@ -1,18 +1,17 @@
 from ciphers.analysis import strip
 from ciphers.monosub.mono_sub import (
-    invert_key,
-    encipher_mono_sub,
-    decipher_mono_sub,
     atbash,
+    decipher_mono_sub,
+    encipher_mono_sub,
+    invert_key,
 )
+from ciphers.test.analysis import get_tests
 
 if __name__ == "__main__":
     testing = "0000"
     testing = [int(i) for i in testing]
 
-    with open("testMonoSub.txt", "r") as f:
-        tests = f.read().split("\n\n")
-
+    tests = get_tests("testMonoSub.txt")
     plaintext = strip(tests[0])
 
     if testing[0]:

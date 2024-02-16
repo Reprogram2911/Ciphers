@@ -1,1 +1,2 @@
-from .caesar import letter_to_num
+from .affine import brute_force_affine
+from .caesar import brute_force_caesar, letter_to_num

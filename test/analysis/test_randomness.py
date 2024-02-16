@@ -1,8 +1,13 @@
-from ciphers.analysis.randomness import entropy, ioc, find_block_size
-from ciphers.test.analysis.test_fitness import test_function, average_corpus
+from ciphers.analysis.randomness import entropy, find_block_size, ioc
+from ciphers.test.analysis.test_fitness import average_corpus, test_function
 
 
-def find_block_size2(text):
+def get_tests(fp):
+    with open(fp, "r") as f:
+        return f.read().split("\n\n")
+
+
+def find_block_size_2(text):
     length = len(text)
     for n in range(2, 7):
         actual = ioc(text, n)
@@ -16,9 +21,7 @@ if __name__ == "__main__":
     testing = "00000"
     testing = [int(i) for i in testing]
 
-    with open("testFindBlockSize.txt", "r") as f:
-        tests = f.read()
-    tests = tests.split("\n\n")
+    tests = get_tests("testFindBlockSize.txt")
     tests = [test.replace(" ", "").replace("\n", "") for test in tests]
 
     if testing[0]:
@@ -41,5 +44,5 @@ if __name__ == "__main__":
 
     if testing[4]:
         for test in tests:
-            find_block_size2(test)
+            find_block_size_2(test)
         # x, 4, 3, 2/3, x, x, x

@@ -3,8 +3,8 @@ from math import log
 
 import matplotlib.pyplot as plt
 
-from ciphers.analysis.corpora import get_file, CORPUS_FP, get_input, output
-from ciphers.analysis.word_lists import read_dict, dict_to_str
+from ciphers.analysis.corpora import CORPUS_FP, get_file, get_input, output
+from ciphers.analysis.word_lists import dict_to_str, read_dict
 
 MONOFREQ_FP = get_file("monoFreq.json")
 TETRAFREQ_FP = get_file("tetraFreq.json")
@@ -17,7 +17,7 @@ def get_freq(n):
         case 4:
             fp = TETRAFREQ_FP
         case _:
-            raise ValueError("1-gram or 4-gram frequencies only")
+            raise ValueError("Only 1-gram or 4-gram frequencies")
 
     with open(fp, "r") as f:
         return read_dict(f)

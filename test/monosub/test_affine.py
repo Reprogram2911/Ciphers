@@ -16,6 +16,7 @@ from ciphers.monosub.affine import (
     solve_for_b,
     valid_key_affine,
 )
+from ciphers.test.analysis import get_tests
 
 
 def two_random_numbers(lowest=1, highest=50):
@@ -45,15 +46,14 @@ def generate_extended_alphabet(a, b):
 
 
 def flatten_list(ls):
-    return [e for l in ls for e in l]
+    return [e for i in ls for e in i]
 
 
 if __name__ == "__main__":
     testing = "0000000001"
     testing = [int(i) for i in testing]
 
-    with open("testAffine.txt", "r") as f:
-        tests = f.read().split("\n\n")
+    tests = get_tests("testAffine.txt")
     tests = [strip(test).replace("\n", "") for test in tests]
     tests = [test.replace(" ", "") if i != 0 else test for i, test in enumerate(tests)]
 

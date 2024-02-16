@@ -1,18 +1,18 @@
 from ciphers.monosub.caesar import (
-    encipher_caesar,
-    decipher_caesar,
+    additive_inverse,
     brute_force_caesar,
     crib_caesar,
+    decipher_caesar,
+    encipher_caesar,
     mono_fitness_caesar,
-    additive_inverse,
 )
+from ciphers.test.analysis import get_tests
 
 if __name__ == "__main__":
     testing = "00000"
     testing = [int(i) for i in testing]
 
-    with open("testCaesar.txt", "r") as f:
-        tests = f.read().split("\n\n")
+    tests = get_tests("testCaesar.txt")
 
     tests[0] = tests[0].replace("\n", " ")
     tests[2] = tests[2].split()
