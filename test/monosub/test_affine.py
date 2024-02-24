@@ -9,7 +9,7 @@ from ciphers.monosub.affine import (
     encipher_affine,
     gcd,
     lcm,
-    lcm2,
+    lcm_2,
     mono_fitness_affine,
     multiplicative_inverse,
     solve_for_a,
@@ -63,8 +63,8 @@ if __name__ == "__main__":
             print(num1, num2)
             print("GCD:", gcd(num1, num2))
             print("LCM1:", lcm(num1, num2))
-            print("LCM2:", lcm2(num1, num2))
-            print("GCD * LCM2:", gcd(num1, num2) * lcm2(num1, num2))
+            print("LCM2:", lcm_2(num1, num2))
+            print("GCD * LCM2:", gcd(num1, num2) * lcm_2(num1, num2))
             print("NUM1 * NUM2:", num1 * num2)
             print()
 

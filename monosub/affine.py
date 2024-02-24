@@ -1,3 +1,5 @@
+from functools import reduce
+
 from ciphers.analysis import (
     ALPHABET,
     get_freq,
@@ -9,7 +11,10 @@ from ciphers.monosub.caesar import all_equal, letter_to_num
 from ciphers.monosub.mono_sub import decipher_mono_sub, encipher_mono_sub
 
 
-def gcd(m, n):
+def gcd(*args):
+    if len(args) > 2:
+        return reduce(gcd, args)
+    m, n = args
     while n != 0:
         m %= n
         m, n = n, m
@@ -20,7 +25,7 @@ def lcm(m, n):
     return int((m * n) / gcd(m, n))
 
 
-def lcm2(*args):
+def lcm_2(*args):
     original_nums = [*args]
     nums = original_nums.copy()
     while not all_equal(nums):

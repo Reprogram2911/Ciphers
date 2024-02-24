@@ -19,10 +19,6 @@ def letter_to_num(letters):
     return [ALPHABET.index(letter) for letter in letters]
 
 
-def num_to_letter(numbers):
-    return [ALPHABET[number] for number in numbers]
-
-
 def generate_alphabet_caesar(number):
     output = []
     for index, letter in enumerate(ALPHABET):

@@ -14,5 +14,5 @@ from .ngram_frequency import (
     split_into_blocks,
     split_into_ngrams,
 )
-from .randomness import ioc
+from .randomness import find_block_size, ioc
 from .word_lists import WORDFREQ_FP, WORDS_FP, dict_to_str, read_dict

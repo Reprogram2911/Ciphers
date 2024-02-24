@@ -10,9 +10,13 @@ def mono_sub_likely(ciphertext):
     return similar_ioc and low_mono_fitness
 
 
+def num_to_letter(numbers):
+    return [ALPHABET[number] for number in numbers]
+
+
 def invert_key(key):
     indexes = [key.index(letter) for letter in ALPHABET]
-    return "".join([ALPHABET[index] for index in indexes])
+    return "".join(num_to_letter(indexes))
 
 
 def encipher_mono_sub(plaintext, key):
@@ -20,6 +24,8 @@ def encipher_mono_sub(plaintext, key):
         key = "".join(key)
     table = str.maketrans(ALPHABET, key)
     return plaintext.translate(table)
+    words = [word.translate(table) for word in plaintext.split()]
+    return " ".join(words)
 
 
 def decipher_mono_sub(ciphertext, key):
