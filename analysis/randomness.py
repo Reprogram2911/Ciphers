@@ -2,7 +2,7 @@ from math import log
 
 import matplotlib.pyplot as plt
 
-from ciphers.analysis.ngram_frequency import ngram_frequencies, mono_frequencies
+from ciphers.analysis.ngram_frequency import mono_frequencies, ngram_frequencies
 
 
 def ioc(text, n=1):
@@ -30,7 +30,7 @@ def split_into_slices(text, period):
     slices = [[] for _ in range(period)]
     for index, letter in enumerate(text):
         slices[index % period].append(letter)
-    return ["".join(slice) for slice in slices]
+    return ["".join(s) for s in slices]
 
 
 def find_block_size(text):
@@ -40,8 +40,8 @@ def find_block_size(text):
     for period in periods:
         slices = split_into_slices(text, period)
         total = 0
-        for slice in slices:
-            total += ioc(slice)
+        for s in slices:
+            total += ioc(s)
         average = total / len(slices)
         iocs.append(average)
     f, ax = plt.subplots(1)

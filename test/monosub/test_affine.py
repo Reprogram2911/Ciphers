@@ -54,7 +54,7 @@ if __name__ == "__main__":
     testing = [int(i) for i in testing]
 
     tests = get_tests("testAffine.txt")
-    tests = [strip(test).replace("\n", "") for test in tests]
+    tests = [strip(test) for test in tests]
     tests = [test.replace(" ", "") if i != 0 else test for i, test in enumerate(tests)]
 
     if testing[0]:

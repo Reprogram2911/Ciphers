@@ -11,8 +11,9 @@ from .ngram_frequency import (
     get_freq,
     mono_frequencies,
     ngram_frequencies,
+    plot_dict,
     split_into_blocks,
     split_into_ngrams,
 )
-from .randomness import find_block_size, ioc
+from .randomness import find_block_size, ioc, split_into_slices
 from .word_lists import WORDFREQ_FP, WORDS_FP, dict_to_str, read_dict

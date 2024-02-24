@@ -1,9 +1,14 @@
 from ciphers.analysis import find_block_size, strip
-from ciphers.polysub.poly_sub import decipher_poly_sub, encipher_poly_sub, find_period
+from ciphers.polysub.poly_sub import (
+    decipher_poly_sub,
+    encipher_poly_sub,
+    find_period,
+    find_period_twist,
+)
 from ciphers.test.analysis import get_tests
 
 if __name__ == "__main__":
-    testing = "000"
+    testing = "0001"
     testing = [int(i) for i in testing]
 
     tests = get_tests("testPolySub.txt")
@@ -27,3 +32,8 @@ if __name__ == "__main__":
         for test in tests[2:]:
             test = test.replace("\n", "")
             find_block_size(test)  # 3, 7, 5
+
+    if testing[3]:
+        for test in tests[2:]:
+            test = test.replace("\n", "")
+            find_period_twist(test)

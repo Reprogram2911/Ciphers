@@ -11,7 +11,7 @@ def mono_sub_likely(ciphertext):
 
 
 def num_to_letter(numbers):
-    return [ALPHABET[number] for number in numbers]
+    return "".join([ALPHABET[number] for number in numbers])
 
 
 def invert_key(key):
