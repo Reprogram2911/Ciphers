@@ -50,7 +50,7 @@ def flatten_list(ls):
 
 
 if __name__ == "__main__":
-    testing = "0000000001"
+    testing = "0000000000"
     testing = [int(i) for i in testing]
 
     tests = get_tests("testAffine.txt")
@@ -128,5 +128,5 @@ if __name__ == "__main__":
         transposed = mono_fitness_affine(tests[5])
         output = []
         for block in split_into_blocks(transposed, 3):
-            output.extend(list(reversed(block)))
+            output += list(reversed(block))
         print("".join(output))

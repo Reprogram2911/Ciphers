@@ -24,11 +24,11 @@ def get_freq(n):
 
 
 def split_into_ngrams(text, n):
-    return [text[i : i + n] for i in range(len(text) - n + 1)]
+    return (text[i : i + n] for i in range(len(text) - n + 1))
 
 
 def split_into_blocks(text, n):
-    return [text[i : i + n] for i in range(0, len(text) - n + 1, n)]
+    return (text[i : i + n] for i in range(0, len(text) - n + 1, n))
 
 
 def ngram_frequencies(text, n, overlapping=True, divide=True, s=False):
