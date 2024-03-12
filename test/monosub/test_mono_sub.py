@@ -1,4 +1,4 @@
-from ciphers.analysis import strip
+from ciphers.analysis import clean
 from ciphers.monosub.mono_sub import (
     atbash,
     decipher_mono_sub,
@@ -13,7 +13,7 @@ if __name__ == "__main__":
     testing = [int(i) for i in testing]
 
     tests = get_tests("testMonoSub.txt")
-    plaintext = strip(tests[0])
+    plaintext = clean(tests[0])
     tests[4] = tests[4].replace(" ", "")
     tests[5] = tests[5].replace("\n", "")
 
@@ -33,3 +33,5 @@ if __name__ == "__main__":
     if testing[4]:
         for test in tests[4:]:
             hill_climbing_mono_sub(test)
+            # EDGARSTUVWXYZBCFHIJKLMNOPQ
+            # OLGVSZEDNFWMQRHCPTUIXYJBKA or OLGVSZEDNFAMQRHCPTUIXYJBKW

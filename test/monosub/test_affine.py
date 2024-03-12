@@ -1,6 +1,6 @@
 from random import randint
 
-from ciphers.analysis import ALPHABET, split_into_blocks, strip
+from ciphers.analysis import ALPHABET, clean, split_into_blocks
 from ciphers.monosub import letter_to_num
 from ciphers.monosub.affine import (
     brute_force_affine,
@@ -54,7 +54,7 @@ if __name__ == "__main__":
     testing = [int(i) for i in testing]
 
     tests = get_tests("testAffine.txt")
-    tests = [strip(test) for test in tests]
+    tests = [clean(test) for test in tests]
     tests = [test.replace(" ", "") if i != 0 else test for i, test in enumerate(tests)]
 
     if testing[0]:

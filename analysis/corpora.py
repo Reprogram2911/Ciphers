@@ -21,7 +21,7 @@ def standardise_whitespace(text):
     return " ".join(words)
 
 
-def strip(text):
+def clean(text):
     text = text.upper()
     included = ALPHABET + string.whitespace
     text = [character for character in text if character in included]
@@ -32,30 +32,30 @@ def strip(text):
 def get_input(source):
     if source is None:
         print("Input:")
-        return input()
-
-    if source.endswith(".txt"):
+        text = input()
+    elif Path(source).suffix == ".txt":
         with open(source, "r") as f:
-            return f.read()
-
-    return source
-
-
-def output(s, dest):
-    if dest is None:
-        print("Output:")
-        print(s)
+            text = f.read()
     else:
-        with open(dest, "w") as f:
-            f.write(s)
+        text = source
+    return clean(text)
+
+
+def output(text, destination):
+    if destination is None:
+        print("Output:")
+        print(text)
+    else:
+        with open(destination, "w") as f:
+            f.write(text)
 
 
 def perform_function(function, source=None, destination=None):
-    arg = get_input(source)
-    result = function(arg)
+    argument = get_input(source)
+    result = function(argument)
     output(result, destination)
 
 
 if __name__ == "__main__":
-    perform_function(strip, get_file("brownCorpus.txt"), CORPUS_FP)
+    perform_function(clean, get_file("brownCorpus.txt"), CORPUS_FP)
     # Brown corpus sourced from http://www.sls.hawaii.edu/bley-vroman/brown.txt

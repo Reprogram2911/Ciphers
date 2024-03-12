@@ -3,32 +3,32 @@ import matplotlib.pyplot as plt
 from ciphers.analysis import (
     ALPHABET,
     get_freq,
+    mono_fitness,
     mono_fitness_chi2,
-    mono_fitness_cos,
     split_into_ngrams,
     tetra_fitness,
 )
-from ciphers.monosub.mono_sub import decipher_mono_sub, encipher_mono_sub
+from ciphers.monosub.mono_sub import (
+    decipher_mono_sub,
+    encipher_mono_sub,
+    letter_to_num,
+)
 
 
 def additive_inverse(number, mod):
     return (-number) % mod
 
 
-def letter_to_num(letters):
-    return [ALPHABET.index(letter) for letter in letters]
-
-
 def generate_alphabet_caesar(number):
-    output = []
-    for index, letter in enumerate(ALPHABET):
-        new_index = (index + number) % 26
-        output.append(ALPHABET[new_index])
-    return output
+    return ALPHABET[number:] + ALPHABET[:number]
 
 
 def generate_alphabet_caesar_2(number):
-    return ALPHABET[number:] + ALPHABET[:number]
+    output = []
+    for index, letter in enumerate(ALPHABET):
+        new_index = (index + number) % len(ALPHABET)
+        output.append(ALPHABET[new_index])
+    return output
 
 
 def encipher_caesar(plaintext, key):
@@ -37,10 +37,12 @@ def encipher_caesar(plaintext, key):
 
 
 def decipher_caesar(ciphertext, key=None):
-    if key is not None:
-        key = generate_alphabet_caesar(key)
-        return decipher_mono_sub(ciphertext, key)
-    return brute_force_caesar(ciphertext)
+    key = generate_alphabet_caesar(key)
+    return decipher_mono_sub(ciphertext, key)
+
+
+def albam(text):
+    return encipher_caesar(text, 13)
 
 
 def output_caesar(ciphertext, key):
@@ -51,7 +53,7 @@ def output_caesar(ciphertext, key):
 
 def brute_force_caesar(ciphertext):
     expected = get_freq(4)
-    poss_texts = {key: decipher_caesar(ciphertext, key) for key in range(26)}
+    poss_texts = {key: decipher_caesar(ciphertext, key) for key in range(len(ALPHABET))}
     fitnesses = {
         key: tetra_fitness(poss_text, expected) for key, poss_text in poss_texts.items()
     }
@@ -71,7 +73,7 @@ def crib_caesar(ciphertext, crib):
         shifts = []
         for letters in zip(ngram, crib):
             i, j = letter_to_num(letters)
-            shift = (i - j) % 26
+            shift = (i - j) % len(ALPHABET)
             shifts.append(shift)
         if all_equal(shifts):
             key = shifts[0]
@@ -84,12 +86,12 @@ def crib_caesar(ciphertext, crib):
 
 def mono_fitness_caesar(ciphertext, chi2=False):
     expected = get_freq(1)
-    poss_texts = [decipher_caesar(ciphertext, k) for k in range(26)]
+    poss_texts = [decipher_caesar(ciphertext, k) for k in range(len(ALPHABET))]
     if chi2:
         fitnesses = [mono_fitness_chi2(poss_text, expected) for poss_text in poss_texts]
     else:
-        fitnesses = [mono_fitness_cos(poss_text, expected) for poss_text in poss_texts]
-    xs = list(range(26))
+        fitnesses = [mono_fitness(poss_text, expected) for poss_text in poss_texts]
+    xs = list(range(len(ALPHABET)))
     fig = plt.figure()
     ax = fig.add_subplot()
     ax.spines["bottom"].set_position("zero")  # accomodates for negative chi2 values

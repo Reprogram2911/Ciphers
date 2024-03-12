@@ -7,14 +7,16 @@ def get_tests(fp):
         return f.read().split("\n\n")
 
 
+def percentage_error(value, expected):
+    return abs((value - expected) / expected) * 100
+
+
 def find_block_size_2(text):
     length = len(text)
     for n in range(2, 7):
         actual = ioc(text, n)
         expected = average_corpus(length, ioc, n)
-        print(f"IoC {n}:")
-        print(f"\tActual: {actual}")
-        print(f"\tExpected: {expected}")
+        print(f"IoC {n}: {percentage_error(actual, expected):.2f}")
 
 
 if __name__ == "__main__":
@@ -26,16 +28,16 @@ if __name__ == "__main__":
 
     if testing[0]:
         test_function("Entropy", entropy, False)  # 0.88
-        test_function("Entropy", entropy, True)  # 1
+        test_function("Entropy", entropy, True)  # 0.99
 
     if testing[1]:
         test_function("Index of coincidence", ioc, False)  # 1.73
-        test_function("Index of coincidence", ioc, True)  # 1
+        test_function("Index of coincidence", ioc, True)  # 1.00
 
     if testing[2]:
-        for n in range(2, 6):
+        for n in range(2, 7):
             test_function("Index of coincidence", ioc, False, n)
-        # 1.33, 3.45, 16, 130
+        # 1.33, 3.4, 16, 130, 1200
 
     if testing[3]:
         for test in tests:
@@ -44,5 +46,5 @@ if __name__ == "__main__":
 
     if testing[4]:
         for test in tests:
-            find_block_size_2(test)
-        # x, 4, 3, 2/3, x, x, x
+            find_block_size_2(test)  # not as reliable as other function
+            print()

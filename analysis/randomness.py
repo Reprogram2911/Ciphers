@@ -2,7 +2,15 @@ from math import log
 
 import matplotlib.pyplot as plt
 
+from ciphers.analysis import ALPHABET
 from ciphers.analysis.ngram_frequency import mono_frequencies, ngram_frequencies
+
+EXPECTED_IOC = 1.73
+EXPECTED_IOCS = [EXPECTED_IOC, 1.33, 3.4, 16, 130, 1200]
+EXPECTED_ENTROPY = 0.88
+
+RANDOM_IOC = 1.00
+RANDOM_ENTROPY = 0.99
 
 
 def ioc(text, n=1):
@@ -15,13 +23,14 @@ def ioc(text, n=1):
         total += numerator
     denominator = length * (length - 1)
     total /= denominator
-    return total * 26**n
+    return total * len(ALPHABET) ** n
 
 
 def entropy(text):
     mono_freq = mono_frequencies(text)
     freqs = list(mono_freq.values())
-    freqs = [freq * log(freq, 26) for freq in freqs]
+
+    freqs = [freq * log(freq, len(ALPHABET)) for freq in freqs]
     total = sum(freqs)
     return -total
 
@@ -49,7 +58,7 @@ def find_block_size(text):
     ys = iocs
     ax.bar(xs, ys)
     ax.set_ylim(ymin=1.0)
-    plt.axhline(y=1.73, color="b", linestyle="--")
+    plt.axhline(y=EXPECTED_IOC, color="b", linestyle="--")
     plt.xlabel("Period")
     plt.ylabel("IoC")
     plt.show()

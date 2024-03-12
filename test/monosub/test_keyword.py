@@ -1,4 +1,4 @@
-from ciphers.analysis import analyse_frequencies, strip
+from ciphers.analysis import analyse_frequencies, clean
 from ciphers.monosub import hill_climbing_mono_sub, invert_key
 from ciphers.monosub.keyword import (
     decipher_keyword,
@@ -13,7 +13,7 @@ if __name__ == "__main__":
     testing = [int(i) for i in testing]
 
     tests = get_tests("testKeyword.txt")
-    tests[0] = strip(tests[0])
+    tests[0] = clean(tests[0])
     tests[1:] = [test.replace("\n", "") for test in tests[1:]]
     tests[2] = tests[2].replace(" ", "")
     tests[4] = tests[4].replace(" ", "")

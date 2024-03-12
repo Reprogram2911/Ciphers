@@ -1,15 +1,16 @@
+from ciphers.analysis import clean
 from ciphers.monosub.caesar import (
+    Caesar,
     additive_inverse,
     brute_force_caesar,
     crib_caesar,
     decipher_caesar,
-    encipher_caesar,
     mono_fitness_caesar,
 )
 from ciphers.test.analysis import get_tests
 
 if __name__ == "__main__":
-    testing = "00000"
+    testing = "01000"
     testing = [int(i) for i in testing]
 
     tests = get_tests("testCaesar.txt")
@@ -29,7 +30,8 @@ if __name__ == "__main__":
                     print(mod, "/ 2 =", element)
 
     if testing[1]:
-        print(encipher_caesar(tests[0].upper(), 11))
+        test = clean(tests[0].upper())
+        print(Caesar(test).encrypt(11))
         print(decipher_caesar(tests[1], 15))
 
     if testing[2]:

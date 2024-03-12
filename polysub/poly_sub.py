@@ -39,7 +39,7 @@ def find_all(s, substring):
     return [i for i in range(len(s)) if s.startswith(substring, i)]
 
 
-def find_period(ciphertext):
+def find_period_repeats(ciphertext):
     differences = []
     for n in range(10, 5, -1):
         ngrams = Counter(split_into_ngrams(ciphertext, n))
@@ -63,13 +63,13 @@ def twist(a, b):
 
 def find_period_twist(ciphertext):
     twists = {}
-    for i in range(2, 20):
+    expected = get_freq(1).values()
+    for i in range(2, 10):
         signatures = []
         slices = split_into_slices(ciphertext, i)
         for s in slices:
             signatures.append(get_signature(s))
         signature = [sum(vs) / len(vs) for vs in zip(*signatures)]
-        expected = get_freq(1)
-        twists[i] = twist(signature, expected.values())
+        twists[i] = twist(signature, expected)
     plot_dict(twists)
     return max(twists, key=twists.get)

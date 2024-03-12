@@ -1,9 +1,11 @@
-from .corpora import ALPHABET, get_corpus, strip
+from .corpora import ALPHABET, clean, get_corpus
 from .fitness import (
-    fitness,
+    CUTOFF_TETRA_FITNESS,
+    EXPECTED_MONO_FITNESS,
+    EXPECTED_TETRA_FITNESS,
+    chi_squared,
     mono_fitness,
     mono_fitness_chi2,
-    mono_fitness_cos,
     tetra_fitness,
 )
 from .ngram_frequency import (
@@ -15,5 +17,5 @@ from .ngram_frequency import (
     split_into_blocks,
     split_into_ngrams,
 )
-from .randomness import find_block_size, ioc, split_into_slices
-from .word_lists import WORDFREQ_FP, WORDS_FP, dict_to_str, read_dict
+from .randomness import EXPECTED_IOC, find_block_size, ioc, split_into_slices
+from .word_lists import WORDS_FP, dict_to_str, read_dict

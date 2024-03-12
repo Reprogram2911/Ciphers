@@ -2,6 +2,16 @@ from math import log, sqrt
 
 from ciphers.analysis.ngram_frequency import mono_frequencies, split_into_ngrams
 
+EXPECTED_MONO_FITNESS = 0.98
+EXPECTED_MONO_FITNESS_CHI2 = -0.06
+EXPECTED_TETRA_FITNESS = -9.6
+
+RANDOM_MONO_FITNESS = 0.75
+RANDOM_MONO_FITNESS_CHI2 = -5.0
+RANDOM_TETRA_FITNESS = -14.7
+
+CUTOFF_TETRA_FITNESS = -10
+
 
 def chi_squared(measured, expected):
     total = 0
@@ -13,11 +23,13 @@ def chi_squared(measured, expected):
 
 def mono_fitness_chi2(text, expected):
     measured = mono_frequencies(text)
-    m_list, e_list = [], []
+    m_list = []
+    e_list = []
     for k, v_m in measured.items():
         if k in expected:
             v_e = expected[k]
-            m_list.append(v_m), e_list.append(v_e)
+            m_list.append(v_m)
+            e_list.append(v_e)
     return -chi_squared(m_list, e_list)
 
 
@@ -34,7 +46,7 @@ def cos_angle(u, v):
     return numerator / denominator
 
 
-def mono_fitness_cos(text, expected):
+def mono_fitness(text, expected):
     measured = mono_frequencies(text)
     m_list, e_list = [], []
     for k, v_m in measured.items():
@@ -42,10 +54,6 @@ def mono_fitness_cos(text, expected):
             v_e = expected[k]
             m_list.append(v_m), e_list.append(v_e)
     return cos_angle(m_list, e_list)
-
-
-def mono_fitness(text, expected):
-    return mono_fitness_cos(text, expected)
 
 
 def tetra_fitness(text, expected):
@@ -58,7 +66,3 @@ def tetra_fitness(text, expected):
         else:
             total -= 15
     return total / (len(text) - 3)
-
-
-def fitness(text, expected):
-    return tetra_fitness(text, expected)

@@ -1,4 +1,11 @@
-from ciphers.analysis import ALPHABET, WORDFREQ_FP, get_freq, read_dict, tetra_fitness
+from ciphers.analysis import (
+    ALPHABET,
+    CUTOFF_TETRA_FITNESS,
+    WORDS_FP,
+    get_freq,
+    read_dict,
+    tetra_fitness,
+)
 from ciphers.monosub.mono_sub import decipher_mono_sub, encipher_mono_sub, invert_key
 
 
@@ -49,6 +56,8 @@ def generate_alphabet_keyword(keyword, method, invert=False):
             key = fill_key_3(keyword)
         case 4:
             key = fill_key_4(keyword)
+        case 5:
+            key = fill_key_5(keyword)
         case _:
             raise ValueError("Not a valid method to fill an alphabet key")
     if invert:
@@ -75,15 +84,14 @@ def output_keyword(ciphertext, keyword, method):
 
 
 def dictionary_keyword(ciphertext):
-    with open(WORDFREQ_FP, "r") as f:
-        words = tuple(read_dict(f).keys())
+    words = read_dict(WORDS_FP).keys()
 
     expected = get_freq(4)
 
     for word, method in ((x, y) for x in words for y in range(1, 4)):
         poss_text = decipher_keyword(ciphertext, word, method)
         fitness = tetra_fitness(poss_text, expected)
-        if fitness > -10:
+        if fitness > CUTOFF_TETRA_FITNESS:
             break
 
     output_keyword(ciphertext, word, method)

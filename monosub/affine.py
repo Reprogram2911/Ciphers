@@ -39,7 +39,7 @@ def coprime(m, n):
     return gcd(m, n) == 1
 
 
-def multiplicative_inverse(x, m=26):
+def multiplicative_inverse(x, m=len(ALPHABET)):
     if not coprime(x, m):
         return False
 
@@ -54,7 +54,7 @@ def multiplicative_inverse(x, m=26):
 
 
 def valid_key_affine(a):
-    return coprime(a, 26)
+    return coprime(a, len(ALPHABET))
 
 
 def generate_alphabet_affine(a, b):
@@ -62,7 +62,7 @@ def generate_alphabet_affine(a, b):
         raise ValueError("Multiplier is not invertible")
     output = []
     for index, letter in enumerate(ALPHABET):
-        new_index = (a * index + b) % 26
+        new_index = (a * index + b) % len(ALPHABET)
         output.append(ALPHABET[new_index])
     return output
 
@@ -82,13 +82,11 @@ def atbash2(text):
 
 
 def encipher_multiplicative(plaintext, a):
-    key = generate_alphabet_affine(a, 0)
-    return encipher_mono_sub(plaintext, key)
+    return encipher_affine(plaintext, a, 0)
 
 
 def decipher_multiplicative(plaintext, a):
-    key = generate_alphabet_affine(a, 0)
-    return decipher_mono_sub(plaintext, key)
+    return decipher_affine(plaintext, a, 0)
 
 
 def output_affine(ciphertext, a, b):
@@ -103,8 +101,8 @@ def brute_force_affine(ciphertext):
     expected = get_freq(4)
     poss_texts = {
         (a, b): decipher_affine(ciphertext, a, b)
-        for a in range(26)
-        for b in range(26)
+        for a in range(len(ALPHABET))
+        for b in range(len(ALPHABET))
         if valid_key_affine(a)
     }
     fitnesses = {
@@ -132,19 +130,19 @@ def solve_for_a(coefficients, rhses):
             index_j = coefficients.index(j)
             diff_rhs = rhses[index_i] - rhses[index_j]
             diff_rhs *= multiplicative_inverse(diff)
-            return diff_rhs % 26
+            return diff_rhs % len(ALPHABET)
 
 
 def solve_for_b(coefficients, rhses, a):
     # coefficient * a + b = rhs
-    return (rhses[0] - coefficients[0] * a) % 26
+    return (rhses[0] - coefficients[0] * a) % len(ALPHABET)
 
 
 def crib_affine(ciphertext, crib):
     n = len(crib)
     ngrams = split_into_ngrams(ciphertext, n)
-    found = False
     coefficients = letter_to_num(crib)
+    found = False
     for ngram in ngrams:
         rhses = letter_to_num(ngram)
         a = solve_for_a(coefficients, rhses)
@@ -161,8 +159,8 @@ def mono_fitness_affine(ciphertext):
     expected = get_freq(1)
     poss_texts = {
         (a, b): decipher_affine(ciphertext, a, b)
-        for a in range(26)
-        for b in range(26)
+        for a in range(len(ALPHABET))
+        for b in range(len(ALPHABET))
         if valid_key_affine(a)
     }
     fitnesses = {

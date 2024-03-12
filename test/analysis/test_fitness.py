@@ -6,8 +6,8 @@ import matplotlib.pyplot as plt
 from ciphers.analysis import ALPHABET, get_corpus, get_freq
 from ciphers.analysis.fitness import (
     chi_squared,
+    mono_fitness,
     mono_fitness_chi2,
-    mono_fitness_cos,
     tetra_fitness,
 )
 
@@ -26,7 +26,7 @@ def average_corpus(sublength, function, *args):
 
 
 def average_random(sublength, function, *args):
-    num_times = 100
+    num_times = 500
     total = 0
     for _ in range(num_times):
         subtext = "".join(choice(ALPHABET) for _ in range(sublength))
@@ -40,14 +40,14 @@ def test_function(label, function, random, *args):
     start_time = perf_counter()
     for sublength in sublengths:
         time_taken = perf_counter() - start_time
-        print(f"{label}\tOn sublength {sublength} ({time_taken:.1f} secs)")
+        print(f"{label} - On sublength {sublength} ({time_taken:.1f} secs)")
         if random:
             value = average_random(sublength, function, *args)
         else:
             value = average_corpus(sublength, function, *args)
         ys.append(value)
     xs = list(sublengths)
-    plt.bar(xs, ys)
+    plt.plot(xs, ys)
     plt.ylabel(label)
     if random:
         plt.xlabel("Length of random subtext")
@@ -71,12 +71,12 @@ if __name__ == "__main__":
 
     if testing[1]:
         test_fitness_function(mono_fitness_chi2)  # -0.06
-        test_fitness_function(mono_fitness_cos)  # 0.98
+        test_fitness_function(mono_fitness)  # 0.98
 
     if testing[2]:
         test_fitness_function(tetra_fitness, 4)  # -9.6
 
     if testing[3]:
-        test_fitness_function(mono_fitness_chi2, random=True)  # -5
-        test_fitness_function(mono_fitness_cos, random=True)  # 0.75
+        test_fitness_function(mono_fitness_chi2, random=True)  # -5.0
+        test_fitness_function(mono_fitness, random=True)  # 0.75
         test_fitness_function(tetra_fitness, 4, True)  # -14.7
