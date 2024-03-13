@@ -59,6 +59,7 @@ def brute_force_caesar(ciphertext):
     }
     key = max(fitnesses, key=fitnesses.get)
     output_caesar(ciphertext, key)
+    return key
 
 
 def all_equal(seq):
@@ -84,20 +85,23 @@ def crib_caesar(ciphertext, crib):
         print("Key not found with crib", crib)
 
 
-def mono_fitness_caesar(ciphertext, chi2=False):
+def mono_fitness_caesar(ciphertext, chi2=False, graph=True, output=False):
     expected = get_freq(1)
     poss_texts = [decipher_caesar(ciphertext, k) for k in range(len(ALPHABET))]
     if chi2:
         fitnesses = [mono_fitness_chi2(poss_text, expected) for poss_text in poss_texts]
     else:
         fitnesses = [mono_fitness(poss_text, expected) for poss_text in poss_texts]
-    xs = list(range(len(ALPHABET)))
-    fig = plt.figure()
-    ax = fig.add_subplot()
-    ax.spines["bottom"].set_position("zero")  # accomodates for negative chi2 values
-    plt.bar(xs, fitnesses)
-    plt.xticks(xs)
-    plt.show()
-    plt.close()
+    if graph:
+        xs = list(range(len(ALPHABET)))
+        fig = plt.figure()
+        ax = fig.add_subplot()
+        ax.spines["bottom"].set_position("zero")  # accomodates for negative chi2 values
+        plt.bar(xs, fitnesses)
+        plt.xticks(xs)
+        plt.show()
+        plt.close()
     key = fitnesses.index(max(fitnesses))
-    output_caesar(ciphertext, key)
+    if output:
+        output_caesar(ciphertext, key)
+    return key

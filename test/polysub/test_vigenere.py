@@ -6,11 +6,12 @@ from ciphers.polysub.vigenere import (
     dictionary_vigenere,
     encipher_vigenere,
     hill_climbing_vigenere,
+    periodic_attack_vigenere,
 )
 from ciphers.test.analysis import get_tests
 
 if __name__ == "__main__":
-    testing = "000000"
+    testing = "0000001"
     testing = [int(i) for i in testing]
 
     tests = get_tests("testVigenere.txt")
@@ -60,3 +61,7 @@ if __name__ == "__main__":
         keys = ["CLUBS", "DIAMONDS"]
         print(decipher_vigenere(decipher_vigenere(test, keys[0]), keys[1]))
         print(decipher_vigenere(decipher_vigenere(test, keys[1]), keys[0]))
+
+    if testing[6]:
+        periodic_attack_vigenere(tests[8])
+        # STING

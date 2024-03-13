@@ -6,12 +6,19 @@ from ciphers.analysis import (
     ALPHABET,
     CUTOFF_TETRA_FITNESS,
     WORDS_FP,
+    find_block_size,
     get_freq,
     read_dict,
     split_into_ngrams,
     tetra_fitness,
 )
-from ciphers.monosub import letter_to_num, num_to_letter, remove_duplicates
+from ciphers.monosub import (
+    letter_to_num,
+    mono_fitness_caesar,
+    num_to_letter,
+    remove_duplicates,
+)
+from ciphers.polysub.poly_sub import split_into_slices
 
 
 def vigenere(text, keyword, encipher):
@@ -22,9 +29,9 @@ def vigenere(text, keyword, encipher):
     for i, letter in enumerate(text):
         k = keyword[i % period]
         if encipher:
-            new_letter = (letter + k) % 26
+            new_letter = (letter + k) % len(ALPHABET)
         else:
-            new_letter = (letter - k) % 26
+            new_letter = (letter - k) % len(ALPHABET)
         new_text.append(new_letter)
     return num_to_letter(new_text)
 
@@ -43,17 +50,32 @@ def output_vigenere(ciphertext, keyword):
     print("Plaintext:", plaintext)
 
 
-def brute_force_vigenere(ciphertext):
+def get_period(ciphertext):
+    find_block_size(ciphertext)
+    return int(input("Period: "))
+
+
+def brute_force_with_keywords(ciphertext, decipher, output, period=None):
+    if period is None:
+        period = get_period(ciphertext)
     expected = get_freq(4)
-    poss_keywords = []
-    for i in range(3, 5):
-        poss_keywords += ["".join(i) for i in product(ALPHABET, repeat=i)]
+    found = False
+    poss_keywords = ["".join(i) for i in product(ALPHABET, repeat=period)]
     for keyword in poss_keywords:
-        poss_text = decipher_vigenere(ciphertext, keyword)
+        print(keyword)
+        poss_text = decipher(ciphertext, keyword)
         fitness = tetra_fitness(poss_text, expected)
         if fitness > CUTOFF_TETRA_FITNESS:
+            found = True
             break
-    output_vigenere(ciphertext, keyword)
+    if found:
+        output(ciphertext, keyword)
+    else:
+        print("Brute-force attack failed")
+
+
+def brute_force_vigenere(ciphertext):
+    brute_force_with_keywords(ciphertext, decipher_vigenere, output_vigenere)
 
 
 def crib_vigenere(ciphertext, crib):
@@ -78,24 +100,30 @@ def crib_vigenere(ciphertext, crib):
     print("\n".join(remove_duplicates(poss_keys)))
 
 
-def dictionary_vigenere(ciphertext):
+def dictionary(ciphertext, decipher, output):
     words = read_dict(WORDS_FP).keys()
-
     expected = get_freq(4)
-
+    found = False
     for word in words:
-        poss_text = decipher_vigenere(ciphertext, word)
+        print(word)
+        poss_text = decipher(ciphertext, word)
         fitness = tetra_fitness(poss_text, expected)
-
         if fitness > CUTOFF_TETRA_FITNESS:
+            found = True
             break
+    if found:
+        output(ciphertext, word)
+    else:
+        print("Dictionary attack failed")
 
-    output_vigenere(ciphertext, word)
+
+def dictionary_vigenere(ciphertext):
+    dictionary(ciphertext, decipher_vigenere, output_vigenere)
 
 
-def hill_climbing_vigenere_algorithm(ciphertext, period, key=None):
+def hill_climbing_algorithm(ciphertext, decipher, period, key=None):
     if key is None:
-        key = ["A"] * period
+        key = [ALPHABET[0]] * period
     else:
         key = list(key)
         assert period == len(key)
@@ -103,52 +131,60 @@ def hill_climbing_vigenere_algorithm(ciphertext, period, key=None):
     current_fitness = tetra_fitness(ciphertext, expected)
     found = False
     counter = 0
-
-    while not found and counter < 100:
+    while not found and counter < 50:
         t_key = key.copy()
         rand_index = randrange(period)
         for letter in ALPHABET:
             t_key[rand_index] = letter
-            plaintext_attempt = decipher_vigenere(ciphertext, t_key)
+            plaintext_attempt = decipher(ciphertext, t_key)
             new_fitness = tetra_fitness(plaintext_attempt, expected)
             if new_fitness > current_fitness:
                 key = t_key.copy()
                 current_fitness = new_fitness
-
+                counter = 0
         if current_fitness > CUTOFF_TETRA_FITNESS:
             found = True
-
         counter += 1
-
     return current_fitness, "".join(key)
 
 
-def hill_climbing_vigenere(ciphertext, period=None, init_key=None):
-    limit = 50
+def hill_climbing(ciphertext, decipher, output, period=None, init_key=None):
+    if period is None:
+        period = get_period(ciphertext)
+    limit = 10
     counter = 1
     record = {}
     found = False
     while not found and counter <= limit:
-        if period is None:
-            for i in range(5, 11):
-                best_fitness, key = hill_climbing_vigenere_algorithm(
-                    ciphertext, i, init_key
-                )
-                record[key] = best_fitness
-                print(counter, i, best_fitness, key)
-                if best_fitness > CUTOFF_TETRA_FITNESS:
-                    found = True
-                    break
-        else:
-            best_fitness, key = hill_climbing_vigenere_algorithm(
-                ciphertext, period, init_key
-            )
-            record[key] = best_fitness
-            print(counter, best_fitness, key)
-            if best_fitness > CUTOFF_TETRA_FITNESS:
-                found = True
+        best_fitness, key = hill_climbing_algorithm(
+            ciphertext, decipher, period, init_key
+        )
+        record[key] = best_fitness
+        print(counter, best_fitness, key)
+        if best_fitness > CUTOFF_TETRA_FITNESS:
+            found = True
+        counter += 1
         if counter == limit:
             key = max(record, key=record.get)
-        counter += 1
-    output_vigenere(ciphertext, key)
+    output(ciphertext, key)
+
+
+def hill_climbing_vigenere(ciphertext, period=None, init_key=None):
+    hill_climbing(ciphertext, decipher_vigenere, output_vigenere, period, init_key)
+
+
+def periodic_attack(ciphertext, period=None):
+    if period is None:
+        period = get_period(ciphertext)
+    slices = split_into_slices(ciphertext, period)
+    key = []
+    for s in slices:
+        k = mono_fitness_caesar(s, graph=False, output=False)
+        key.append(k)
     return key
+
+
+def periodic_attack_vigenere(ciphertext, period=None):
+    key = periodic_attack(ciphertext, period)
+    key = num_to_letter(key)
+    output_vigenere(ciphertext, key)

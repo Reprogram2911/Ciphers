@@ -28,9 +28,10 @@ def two_random_numbers(lowest=1, highest=50):
 
 
 def random_a_b():
-    a, b = two_random_numbers(0, 25)
+    highest = len(ALPHABET) - 1
+    a, b = two_random_numbers(0, highest)
     while not valid_key_affine(a):
-        a = randint(0, 25)
+        a = randint(0, highest)
     return a, b
 
 
@@ -40,7 +41,7 @@ def generate_extended_alphabet(a, b):
     output = []
     extended_alphabet = ALPHABET + " "
     for index, letter in enumerate(extended_alphabet):
-        new_index = (a * index + b) % 27
+        new_index = (a * index + b) % len(extended_alphabet)
         output.append(extended_alphabet[new_index])
     return output
 
@@ -77,8 +78,9 @@ if __name__ == "__main__":
 
     if testing[2]:
         keyspace = 0
-        for a in range(26):
-            for b in range(26):
+        poss = len(ALPHABET)
+        for a in range(poss):
+            for b in range(poss):
                 if valid_key_affine(a):
                     keyspace += 1
         print(keyspace)  # 312
@@ -89,8 +91,9 @@ if __name__ == "__main__":
 
     if testing[4]:
         keyspace = 0
-        for a in range(27):
-            for b in range(27):
+        poss = len(ALPHABET) + 1
+        for a in range(poss):
+            for b in range(poss):
                 if valid_key_affine(a):
                     keyspace += 1
         print(keyspace)  # 324
