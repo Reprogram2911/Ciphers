@@ -6,7 +6,7 @@ from ciphers.analysis import (
     ALPHABET,
     CUTOFF_TETRA_FITNESS,
     WORDS_FP,
-    find_block_size,
+    find_period_graph,
     get_freq,
     read_dict,
     split_into_ngrams,
@@ -51,7 +51,7 @@ def output_vigenere(ciphertext, keyword):
 
 
 def get_period(ciphertext):
-    find_block_size(ciphertext)
+    find_period_graph(ciphertext)
     return int(input("Period: "))
 
 
@@ -148,10 +148,9 @@ def hill_climbing_algorithm(ciphertext, decipher, period, key=None):
     return current_fitness, "".join(key)
 
 
-def hill_climbing(ciphertext, decipher, output, period=None, init_key=None):
+def hill_climbing(ciphertext, decipher, output, period=None, init_key=None, limit=20):
     if period is None:
         period = get_period(ciphertext)
-    limit = 10
     counter = 1
     record = {}
     found = False
@@ -163,14 +162,17 @@ def hill_climbing(ciphertext, decipher, output, period=None, init_key=None):
         print(counter, best_fitness, key)
         if best_fitness > CUTOFF_TETRA_FITNESS:
             found = True
-        counter += 1
         if counter == limit:
             key = max(record, key=record.get)
+        counter += 1
     output(ciphertext, key)
+    return key
 
 
 def hill_climbing_vigenere(ciphertext, period=None, init_key=None):
-    hill_climbing(ciphertext, decipher_vigenere, output_vigenere, period, init_key)
+    return hill_climbing(
+        ciphertext, decipher_vigenere, output_vigenere, period, init_key
+    )
 
 
 def periodic_attack(ciphertext, period=None):
@@ -179,7 +181,7 @@ def periodic_attack(ciphertext, period=None):
     slices = split_into_slices(ciphertext, period)
     key = []
     for s in slices:
-        k = mono_fitness_caesar(s, graph=False, output=False)
+        k = mono_fitness_caesar(s, output=False)
         key.append(k)
     return key
 

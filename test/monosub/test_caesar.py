@@ -1,21 +1,20 @@
 from ciphers.analysis import clean
 from ciphers.monosub.caesar import (
-    Caesar,
     additive_inverse,
     brute_force_caesar,
     crib_caesar,
     decipher_caesar,
+    encipher_caesar,
     mono_fitness_caesar,
 )
-from ciphers.test.analysis import get_tests
+from ciphers.test.utils import get_tests
 
 if __name__ == "__main__":
-    testing = "01000"
+    testing = "00000"
     testing = [int(i) for i in testing]
 
     tests = get_tests("testCaesar.txt")
 
-    tests[0] = tests[0].replace("\n", " ")
     tests[2] = tests[2].split()
     tests = [
         test.replace("\n", "") if isinstance(test, str) else test for test in tests
@@ -31,7 +30,7 @@ if __name__ == "__main__":
 
     if testing[1]:
         test = clean(tests[0].upper())
-        print(Caesar(test).encrypt(11))
+        print(encipher_caesar(test, 11))
         print(decipher_caesar(tests[1], 15))
 
     if testing[2]:
@@ -49,10 +48,8 @@ if __name__ == "__main__":
         longs = tests[5:]
         shorts = tests[2]
         for test in longs:
-            mono_fitness_caesar(test, True)
-        for test in shorts:
-            mono_fitness_caesar(test, True)  # fails
-        for test in longs:
+            mono_fitness_caesar(test, chi2=True)
             mono_fitness_caesar(test)
         for test in shorts:
-            mono_fitness_caesar(test)  # fails (but second one should succed?)
+            mono_fitness_caesar(test, chi2=True)  # fails
+            mono_fitness_caesar(test)  # fails (but second one should pass?)

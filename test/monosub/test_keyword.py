@@ -1,4 +1,4 @@
-from ciphers.analysis import analyse_frequencies, clean
+from ciphers.analysis import clean, mono_frequencies
 from ciphers.monosub import hill_climbing_mono_sub, invert_key
 from ciphers.monosub.keyword import (
     decipher_keyword,
@@ -6,7 +6,7 @@ from ciphers.monosub.keyword import (
     encipher_keyword,
     generate_alphabet_keyword,
 )
-from ciphers.test.analysis import get_tests
+from ciphers.test.utils import get_tests
 
 if __name__ == "__main__":
     testing = "0000"
@@ -29,8 +29,9 @@ if __name__ == "__main__":
 
     if testing[2]:
         test = tests[2]
-        analyse_frequencies(test)  # L is most common
-        test = test.replace("L", "")
+        letter = list(mono_frequencies(test).keys())[0]
+        print(letter)  # L is most common
+        test = test.replace(letter, "")
         key = hill_climbing_mono_sub(test)  # DFIGXHJKCSNPQROMUEBTALVWYZ
         print(invert_key(key))  # USIARBDFCGHJPKOLMNVTQWXEYZ
 

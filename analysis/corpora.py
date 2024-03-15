@@ -2,6 +2,7 @@ from pathlib import Path
 import string
 
 ALPHABET = string.ascii_uppercase
+WHITESPACE = string.whitespace
 
 
 def get_file(filename):
@@ -23,7 +24,7 @@ def standardise_whitespace(text):
 
 def clean(text):
     text = text.upper()
-    included = ALPHABET + string.whitespace
+    included = ALPHABET + WHITESPACE
     text = [character for character in text if character in included]
     text = "".join(text)
     return standardise_whitespace(text)

@@ -1,11 +1,11 @@
-from ciphers.analysis import clean, find_block_size
+from ciphers.analysis import clean, find_period_auto
 from ciphers.polysub.poly_sub import (
     decipher_poly_sub,
     encipher_poly_sub,
     find_period_repeats,
     find_period_twist,
 )
-from ciphers.test.analysis import get_tests
+from ciphers.test.utils import get_tests
 
 if __name__ == "__main__":
     testing = "0000"
@@ -24,17 +24,16 @@ if __name__ == "__main__":
         for test in tests[2:]:
             test = test.replace("\n", "")
             try:
-                print(find_period_repeats(test))  # x, 7, 5
+                print(find_period_repeats(test))  # x, 7, 5, 5
             except ValueError as e:
                 print(e)
 
     if testing[2]:
         for test in tests[2:]:
             test = test.replace("\n", "")
-            find_block_size(test)  # 3, 7, 5, 5
+            find_period_auto(test)  # 3, 7, 5, 5
 
     if testing[3]:
         for test in tests[2:]:
             test = test.replace("\n", "")
-            find_period_twist(test)
-            # unreliable
+            find_period_twist(test)  # unreliable

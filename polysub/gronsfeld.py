@@ -91,7 +91,9 @@ def hill_climbing_gronsfeld_algorithm(ciphertext, decipher, period, key=None):
     return current_fitness, "".join(key)
 
 
-def hill_climbing_gronsfeld(ciphertext, decipher, output, period=None, init_key=None):
+def hill_climbing_gronsfeld(ciphertext, period=None, init_key=None):
+    decipher = decipher_gronsfeld
+    output = output_gronsfeld
     if period is None:
         period = get_period(ciphertext)
     limit = 10

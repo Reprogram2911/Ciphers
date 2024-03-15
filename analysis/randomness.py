@@ -1,9 +1,11 @@
 from math import log
 
 import matplotlib.pyplot as plt
+import numpy as np
 
 from ciphers.analysis import ALPHABET
 from ciphers.analysis.ngram_frequency import mono_frequencies, ngram_frequencies
+from ciphers.test.analysis.test_fitness import average_corpus
 
 EXPECTED_IOC = 1.73
 EXPECTED_IOCS = [EXPECTED_IOC, 1.33, 3.4, 16, 130, 1200]
@@ -12,15 +14,17 @@ EXPECTED_ENTROPY = 0.88
 RANDOM_IOC = 1.00
 RANDOM_ENTROPY = 0.99
 
+SD_IOC = 0.15
+
 
 def ioc(text, n=1):
     length = len(text)
+    assert length > 1
     freqs = ngram_frequencies(text, n, overlapping=False).values()
-    freqs = [freq * (length - n + 1) for freq in freqs]
-    total = 0
-    for freq in freqs:
-        numerator = freq * (freq - 1)
-        total += numerator
+    freqs = np.array(list(freqs))
+    freqs *= length - n + 1
+    numerator = freqs * (freqs - 1)
+    total = numerator.sum()
     denominator = length * (length - 1)
     total /= denominator
     return total * len(ALPHABET) ** n
@@ -42,24 +46,66 @@ def split_into_slices(text, period):
     return ["".join(s) for s in slices]
 
 
-def find_block_size(text):
+def similar_ioc(text=None, ioc_v=None):
+    if text is None:
+        assert ioc_v is not None
+        actual_ioc = ioc_v
+    else:
+        actual_ioc = ioc(text)
+    return abs(actual_ioc - EXPECTED_IOC) < SD_IOC or actual_ioc > EXPECTED_IOC
+
+
+def find_period_auto(text):
+    max_period = 40
+    found = False
+    period = 0
+    while not found and period < max_period:
+        period += 1
+        slices = split_into_slices(text, period)
+        total = 0
+        for s in slices:
+            total += ioc(s)
+        average = total / period
+        if similar_ioc(ioc_v=average):
+            found = True
+    if found:
+        print(period)
+        return period
+    print("Period not found")
+    find_period_graph(text)
+
+
+def find_period_graph(text):
     iocs = []
-    max_period = 30
+    max_period = min(30, len(text) // 2)
     periods = range(1, max_period + 1)
     for period in periods:
         slices = split_into_slices(text, period)
         total = 0
         for s in slices:
             total += ioc(s)
-        average = total / len(slices)
+        average = total / period
         iocs.append(average)
     f, ax = plt.subplots(1)
     xs = list(periods)
     ys = iocs
     ax.bar(xs, ys)
+    plt.xticks(periods[1::2])
     ax.set_ylim(ymin=1.0)
     plt.axhline(y=EXPECTED_IOC, color="b", linestyle="--")
     plt.xlabel("Period")
     plt.ylabel("IoC")
     plt.show()
     plt.close()
+
+
+def percentage_error(value, expected):
+    return abs((value - expected) / expected) * 100
+
+
+def find_block_size(text):
+    length = len(text)
+    for n in range(2, 7):
+        actual = ioc(text, n)
+        expected = average_corpus(length, ioc, n)
+        print(f"IoC {n}: {percentage_error(actual, expected):.2f}")

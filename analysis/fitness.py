@@ -1,5 +1,7 @@
 from math import log, sqrt
 
+import numpy as np
+
 from ciphers.analysis.ngram_frequency import mono_frequencies, split_into_ngrams
 
 EXPECTED_MONO_FITNESS = 0.98
@@ -14,6 +16,14 @@ CUTOFF_TETRA_FITNESS = -10
 
 
 def chi_squared(measured, expected):
+    measured = np.array(measured)
+    expected = np.array(expected)
+    numerator = (measured - expected) ** 2
+    total = numerator / expected
+    return total.sum()
+
+
+def chi_squared_2(measured, expected):
     total = 0
     for m, e in zip(measured, expected):
         numerator = (m - e) ** 2
@@ -34,6 +44,12 @@ def mono_fitness_chi2(text, expected):
 
 
 def dot_product(u, v):
+    if len(u) != len(v):
+        raise ValueError("The dimensions of the two vectors do not match")
+    return np.dot(u, v)
+
+
+def dot_product_2(u, v):
     if len(u) != len(v):
         raise ValueError("The dimensions of the two vectors do not match")
     products = [a * b for a, b in zip(u, v)]

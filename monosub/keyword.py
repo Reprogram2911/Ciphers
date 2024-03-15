@@ -79,19 +79,21 @@ def output_keyword(ciphertext, keyword, method):
     key = generate_alphabet_keyword(keyword, method)
     plaintext = decipher_mono_sub(ciphertext, key)
     print("Keyword:", keyword)
-    print("Key:", key)
+    print(f"Key (method={method}: {key}")
     print("Plaintext:", plaintext)
 
 
 def dictionary_keyword(ciphertext):
     words = read_dict(WORDS_FP).keys()
-
     expected = get_freq(4)
-
+    found = False
     for word, method in ((x, y) for x in words for y in range(1, 4)):
         poss_text = decipher_keyword(ciphertext, word, method)
         fitness = tetra_fitness(poss_text, expected)
         if fitness > CUTOFF_TETRA_FITNESS:
+            found = True
             break
-
-    output_keyword(ciphertext, word, method)
+    if found:
+        output_keyword(ciphertext, word, method)
+    else:
+        print("Dictionary attack failed")

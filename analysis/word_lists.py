@@ -25,8 +25,8 @@ def freq_word_list(text, s=False):
     return freq
 
 
-def dict_to_str(dictionary):
-    return json.dumps(dictionary, indent=0)
+def dict_to_str(d):
+    return json.dumps(d, indent=0)
 
 
 def str_to_dict(s):

@@ -126,8 +126,8 @@ def solve_for_a(coefficients, rhses):
     for i, j in pairs:
         diff = i - j
         if valid_key_affine(diff):
-            index_i = coefficients.index(i)
-            index_j = coefficients.index(j)
+            index_i = list(coefficients).index(i)
+            index_j = list(coefficients).index(j)
             diff_rhs = rhses[index_i] - rhses[index_j]
             diff_rhs *= multiplicative_inverse(diff)
             return diff_rhs % len(ALPHABET)

@@ -16,7 +16,7 @@ from ciphers.monosub.affine import (
     solve_for_b,
     valid_key_affine,
 )
-from ciphers.test.analysis import get_tests
+from ciphers.test.utils import get_tests
 
 
 def two_random_numbers(lowest=1, highest=50):
@@ -101,10 +101,8 @@ if __name__ == "__main__":
     if testing[5]:
         m, n = random_a_b()
         print(m, n)
-
         p, q = random_a_b()
         print(p, q)
-
         # p * (m * i + n) + q = pm * i + (pn + q)
         r = p * m
         s = p * n + q
@@ -114,21 +112,21 @@ if __name__ == "__main__":
             print(encipher_affine(tests[0], r, s))
 
     if testing[6]:
-        brute_force_affine(tests[2])
+        brute_force_affine(tests[2])  # 23, 8
 
     if testing[7]:
-        crib, ngram = letter_to_num("CRIB"), letter_to_num("KFIT")
-        a = solve_for_a(crib, ngram)
-        print(a)  # 17
+        crib = letter_to_num("CRIB")
+        ngram = letter_to_num("KFIT")
+        a = solve_for_a(crib, ngram)  # 17
         print(solve_for_b(crib, ngram, a))  # 2
 
     if testing[8]:
-        crib_affine(tests[3], "CRIB")
+        crib_affine(tests[3], "CRIB")  # 21, 5
 
     if testing[9]:
-        mono_fitness_affine(tests[4])
+        mono_fitness_affine(tests[4])  # 7, 22
 
-        transposed = mono_fitness_affine(tests[5])
+        transposed = mono_fitness_affine(tests[5])  # 9 ,2
         output = []
         for block in split_into_blocks(transposed, 3):
             output += list(reversed(block))

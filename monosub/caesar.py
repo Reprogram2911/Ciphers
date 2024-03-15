@@ -85,7 +85,7 @@ def crib_caesar(ciphertext, crib):
         print("Key not found with crib", crib)
 
 
-def mono_fitness_caesar(ciphertext, chi2=False, graph=True, output=False):
+def mono_fitness_caesar(ciphertext, graph=False, output=True, chi2=False):
     expected = get_freq(1)
     poss_texts = [decipher_caesar(ciphertext, k) for k in range(len(ALPHABET))]
     if chi2:

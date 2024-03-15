@@ -44,12 +44,13 @@ def ngram_frequencies(text, n, overlapping=True, divide=True, s=False):
     return freq
 
 
-def mono_frequencies(text, **kwargs):
-    freq = ngram_frequencies(text, 1, **kwargs)
-    if kwargs:
+def mono_frequencies(text, overlapping=True, divide=True, s=False):
+    freq = ngram_frequencies(text, 1, overlapping, divide)
+    if s:
         for letter in ALPHABET:
             if letter not in freq:
                 freq[letter] = 0
+        return dict_to_str(freq)
     return freq
 
 
@@ -70,6 +71,7 @@ def plot_dict(dictionary):
 
 def analyse_frequencies(source=None, mono_dest=None, tetra_dest=None, spaces=False):
     text = get_input(source)
+
     if not spaces:
         text = text.replace(" ", "")
 
@@ -80,8 +82,9 @@ def analyse_frequencies(source=None, mono_dest=None, tetra_dest=None, spaces=Fal
     mono_s = mono_frequencies(text, s=True)
     output(mono_s, mono_dest)
 
-    tetra_s = tetra_frequencies(text, s=True)
-    output(tetra_s, tetra_dest)
+    if tetra_dest is not None:
+        tetra_s = tetra_frequencies(text, s=True)
+        output(tetra_s, tetra_dest)
 
 
 if __name__ == "__main__":

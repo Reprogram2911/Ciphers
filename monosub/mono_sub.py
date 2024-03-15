@@ -5,23 +5,20 @@ import numpy as np
 from ciphers.analysis import (
     ALPHABET,
     CUTOFF_TETRA_FITNESS,
-    EXPECTED_IOC,
     EXPECTED_MONO_FITNESS,
     get_freq,
-    ioc,
     mono_fitness,
+    similar_ioc,
     tetra_fitness,
 )
 
 
 def mono_sub_likely(ciphertext):
-    margin = 0.2
+    margin = 0.3
     expected = get_freq(1)
-    similar_ioc = abs(ioc(ciphertext) - EXPECTED_IOC) < margin
-    low_mono_fitness = (
-        abs(mono_fitness(ciphertext, expected) - EXPECTED_MONO_FITNESS) > margin
-    )
-    return similar_ioc and low_mono_fitness
+    actual_mono_fitness = mono_fitness(ciphertext, expected)
+    low_mono_fitness = abs(actual_mono_fitness - EXPECTED_MONO_FITNESS) > margin
+    return similar_ioc(ciphertext) and low_mono_fitness
 
 
 def letter_to_num(letters):
@@ -69,7 +66,9 @@ def output_mono_sub(ciphertext, key):
     print("Plaintext:", plaintext)
 
 
-def hill_climbing_mono_sub_algorithm(ciphertext, init_key=ALPHABET):
+def hill_climbing_mono_sub_algorithm(ciphertext, init_key=None):
+    if init_key is None:
+        init_key = ALPHABET
     parent_key = list(init_key)
     expected = get_freq(4)
     plaintext_attempt = decipher_mono_sub(ciphertext, parent_key)
@@ -87,20 +86,19 @@ def hill_climbing_mono_sub_algorithm(ciphertext, init_key=ALPHABET):
     return best_fitness, "".join(parent_key)
 
 
-def hill_climbing_mono_sub(ciphertext):
-    counter = 0
-    limit = 50
+def hill_climbing_mono_sub(ciphertext, init_key=None):
+    counter = 1
+    limit = 20
     record = {}
     found = False
     while not found and counter <= limit:
-        best_fitness, key = hill_climbing_mono_sub_algorithm(ciphertext)
+        best_fitness, key = hill_climbing_mono_sub_algorithm(ciphertext, init_key)
         record[key] = best_fitness
-        counter += 1
         print(counter, best_fitness, key)
         if best_fitness > CUTOFF_TETRA_FITNESS:
             found = True
         if counter == limit:
             key = max(record, key=record.get)
-            break
+        counter += 1
     output_mono_sub(ciphertext, key)
     return key

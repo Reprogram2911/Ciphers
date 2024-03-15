@@ -6,7 +6,7 @@ from ciphers.monosub.mono_sub import (
     hill_climbing_mono_sub,
     invert_key,
 )
-from ciphers.test.analysis import get_tests
+from ciphers.test.utils import get_tests
 
 if __name__ == "__main__":
     testing = "00000"
@@ -14,8 +14,6 @@ if __name__ == "__main__":
 
     tests = get_tests("testMonoSub.txt")
     plaintext = clean(tests[0])
-    tests[4] = tests[4].replace(" ", "")
-    tests[5] = tests[5].replace("\n", "")
 
     if testing[0]:
         print(invert_key(tests[1]))
@@ -27,11 +25,14 @@ if __name__ == "__main__":
         print(decipher_mono_sub(*tests[3].split()))
 
     if testing[3]:
-        print(atbash(plaintext))
-        print(atbash(atbash(plaintext)))
+        assert plaintext == atbash(atbash(plaintext))
 
     if testing[4]:
+        tests[4] = tests[4].replace(" ", "")
+        tests[5] = tests[5].replace("\n", "")
         for test in tests[4:]:
             hill_climbing_mono_sub(test)
             # EDGARSTUVWXYZBCFHIJKLMNOPQ
-            # OLGVSZEDNFWMQRHCPTUIXYJBKA or OLGVSZEDNFAMQRHCPTUIXYJBKW
+            # OLGVSZEDNFWMQRHCPTUIXYJBKA
+            # The letters ABFPW are interchangeable in the key, because
+            # the letters JKQXZ are unused in the plaintext

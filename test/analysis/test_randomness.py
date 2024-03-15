@@ -1,23 +1,12 @@
-from ciphers.analysis.randomness import entropy, find_block_size, ioc
-from ciphers.test.analysis.test_fitness import average_corpus, test_function
-
-
-def get_tests(fp):
-    with open(fp, "r") as f:
-        return f.read().split("\n\n")
-
-
-def percentage_error(value, expected):
-    return abs((value - expected) / expected) * 100
-
-
-def find_block_size_2(text):
-    length = len(text)
-    for n in range(2, 7):
-        actual = ioc(text, n)
-        expected = average_corpus(length, ioc, n)
-        print(f"IoC {n}: {percentage_error(actual, expected):.2f}")
-
+from ciphers.analysis.randomness import (
+    entropy,
+    find_block_size,
+    find_period_auto,
+    find_period_graph,
+    ioc,
+)
+from ciphers.test.analysis.test_fitness import test_function
+from ciphers.test.utils import get_tests
 
 if __name__ == "__main__":
     testing = "00000"
@@ -41,10 +30,12 @@ if __name__ == "__main__":
 
     if testing[3]:
         for test in tests:
-            find_block_size(test)
+            find_period_auto(test)
+            find_period_graph(test)
+        # 6, 4, x, x, x, 5, 4
         # 6, 4, x, x, x, 5, 4
 
     if testing[4]:
         for test in tests:
-            find_block_size_2(test)  # not as reliable as other function
+            find_block_size(test)  # unreliable
             print()

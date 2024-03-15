@@ -17,5 +17,12 @@ from .ngram_frequency import (
     split_into_blocks,
     split_into_ngrams,
 )
-from .randomness import EXPECTED_IOC, find_block_size, ioc, split_into_slices
+from .randomness import (
+    EXPECTED_IOC,
+    find_period_auto,
+    find_period_graph,
+    ioc,
+    similar_ioc,
+    split_into_slices,
+)
 from .word_lists import WORDS_FP, dict_to_str, read_dict

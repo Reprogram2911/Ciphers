@@ -67,7 +67,9 @@ if __name__ == "__main__":
     testing = [int(i) for i in testing]
 
     if testing[0]:
-        print(chi_squared([1.1, 2.5, 7.3], [1, 3, 7]))
+        m = [1.1, 2.5, 7.3]
+        e = [1, 3, 7]
+        print(chi_squared(m, e))
 
     if testing[1]:
         test_fitness_function(mono_fitness_chi2)  # -0.06
