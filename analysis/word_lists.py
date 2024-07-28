@@ -38,6 +38,10 @@ def read_dict(fp):
         return str_to_dict(f.read())
 
 
+def get_words():
+    return list(read_dict(WORDS_FP).keys())
+
+
 def analyse_words(source=None, alpha_dest=None, freq_dest=None):
     text = get_input(source)
 

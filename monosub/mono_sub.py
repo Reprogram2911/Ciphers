@@ -66,18 +66,21 @@ def output_mono_sub(ciphertext, key):
     print("Plaintext:", plaintext)
 
 
-def hill_climbing_mono_sub_algorithm(ciphertext, init_key=None):
+def hill_climbing_mono_sub_algorithm(ciphertext, init_key=None, fit_f=tetra_fitness):
     if init_key is None:
         init_key = ALPHABET
     parent_key = list(init_key)
-    expected = get_freq(4)
+    if fit_f == tetra_fitness:
+        expected = get_freq(4)
+    else:
+        expected = get_freq(1)
     plaintext_attempt = decipher_mono_sub(ciphertext, parent_key)
-    best_fitness = tetra_fitness(plaintext_attempt, expected)
+    best_fitness = fit_f(plaintext_attempt, expected)
     counter = 0
     while counter < 10000:
         child_key = swap_random(parent_key)
         plaintext_attempt = decipher_mono_sub(ciphertext, child_key)
-        fitness_attempt = tetra_fitness(plaintext_attempt, expected)
+        fitness_attempt = fit_f(plaintext_attempt, expected)
         if fitness_attempt > best_fitness:
             parent_key = child_key.copy()
             best_fitness = fitness_attempt
@@ -86,13 +89,15 @@ def hill_climbing_mono_sub_algorithm(ciphertext, init_key=None):
     return best_fitness, "".join(parent_key)
 
 
-def hill_climbing_mono_sub(ciphertext, init_key=None):
+def hill_climbing_mono_sub(ciphertext, init_key=None, fit_f=tetra_fitness):
     counter = 1
     limit = 20
     record = {}
     found = False
     while not found and counter <= limit:
-        best_fitness, key = hill_climbing_mono_sub_algorithm(ciphertext, init_key)
+        best_fitness, key = hill_climbing_mono_sub_algorithm(
+            ciphertext, init_key, fit_f
+        )
         record[key] = best_fitness
         print(counter, best_fitness, key)
         if best_fitness > CUTOFF_TETRA_FITNESS:

@@ -38,7 +38,7 @@ def dictionary_variant_beaufort(ciphertext):
 
 
 def hill_climbing_variant_beaufort(ciphertext, period=None, init_key=None):
-    hill_climbing(
+    return hill_climbing(
         ciphertext, decipher_variant_beaufort, output_variant_beaufort, period, init_key
     )
 

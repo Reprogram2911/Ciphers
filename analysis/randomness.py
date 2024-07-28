@@ -56,26 +56,34 @@ def similar_ioc(text=None, ioc_v=None):
 
 
 def find_period_auto(text):
-    max_period = 40
-    found = False
-    period = 0
-    while not found and period < max_period:
-        period += 1
+    max_period = 10
+    period = 1
+    avgs = []
+    while period <= max_period:
         slices = split_into_slices(text, period)
         total = 0
         for s in slices:
             total += ioc(s)
         average = total / period
-        if similar_ioc(ioc_v=average):
-            found = True
-    if found:
-        print(period)
-        return period
-    print("Period not found")
-    find_period_graph(text)
+        avgs.append(average)
+        period += 1
+    plt.plot([i + 1 for i in range(max_period)], avgs)
+    plt.show()
+    plt.close()
+    plot_period_graph(text)
+    return input_number(f"Give keyword length (optimal m=): ")
 
 
-def find_period_graph(text):
+def input_number(message=None):
+    valid_input = False
+    while not valid_input:
+        user_input = input(message)
+        if user_input.isdigit():
+            valid_input = True
+    return user_input
+
+
+def plot_period_graph(text):
     iocs = []
     max_period = min(30, len(text) // 2)
     periods = range(1, max_period + 1)

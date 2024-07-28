@@ -5,10 +5,9 @@ from random import randrange
 from ciphers.analysis import (
     ALPHABET,
     CUTOFF_TETRA_FITNESS,
-    WORDS_FP,
-    find_period_graph,
     get_freq,
-    read_dict,
+    get_words,
+    plot_period_graph,
     split_into_ngrams,
     tetra_fitness,
 )
@@ -51,7 +50,7 @@ def output_vigenere(ciphertext, keyword):
 
 
 def get_period(ciphertext):
-    find_period_graph(ciphertext)
+    plot_period_graph(ciphertext)
     return int(input("Period: "))
 
 
@@ -100,21 +99,31 @@ def crib_vigenere(ciphertext, crib):
     print("\n".join(remove_duplicates(poss_keys)))
 
 
-def dictionary(ciphertext, decipher, output):
-    words = read_dict(WORDS_FP).keys()
+def dictionary(ciphertext, decipher, output, period=None):
+    if period is None:
+        period = get_period(ciphertext)
+    words = get_words()
     expected = get_freq(4)
+    highest_f = -500
+    best_word = ""
     found = False
     for word in words:
+        if len(word) != period:
+            continue
         print(word)
         poss_text = decipher(ciphertext, word)
         fitness = tetra_fitness(poss_text, expected)
         if fitness > CUTOFF_TETRA_FITNESS:
             found = True
             break
+        if fitness > highest_f:
+            highest_f = fitness
+            best_word = word
     if found:
         output(ciphertext, word)
     else:
-        print("Dictionary attack failed")
+        print("Dictionary attack failed; best found was")
+        output(ciphertext, best_word)
 
 
 def dictionary_vigenere(ciphertext):
@@ -166,13 +175,10 @@ def hill_climbing(ciphertext, decipher, output, period=None, init_key=None, limi
             key = max(record, key=record.get)
         counter += 1
     output(ciphertext, key)
-    return key
 
 
 def hill_climbing_vigenere(ciphertext, period=None, init_key=None):
-    return hill_climbing(
-        ciphertext, decipher_vigenere, output_vigenere, period, init_key
-    )
+    hill_climbing(ciphertext, decipher_vigenere, output_vigenere, period, init_key)
 
 
 def periodic_attack(ciphertext, period=None):

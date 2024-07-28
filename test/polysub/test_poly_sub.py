@@ -4,11 +4,12 @@ from ciphers.polysub.poly_sub import (
     encipher_poly_sub,
     find_period_repeats,
     find_period_twist,
+    hill_climbing_poly_sub,
 )
 from ciphers.test.utils import get_tests
 
 if __name__ == "__main__":
-    testing = "0000"
+    testing = "00001"
     testing = [int(i) for i in testing]
 
     tests = get_tests("testPolySub.txt")
@@ -37,3 +38,7 @@ if __name__ == "__main__":
         for test in tests[2:]:
             test = test.replace("\n", "")
             find_period_twist(test)  # unreliable
+
+    if testing[4]:
+        test = tests[6].replace("\n", "")
+        hill_climbing_poly_sub(test, 4)

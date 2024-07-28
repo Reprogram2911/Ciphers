@@ -20,9 +20,9 @@ from .ngram_frequency import (
 from .randomness import (
     EXPECTED_IOC,
     find_period_auto,
-    find_period_graph,
     ioc,
+    plot_period_graph,
     similar_ioc,
     split_into_slices,
 )
-from .word_lists import WORDS_FP, dict_to_str, read_dict
+from .word_lists import WORDS_FP, dict_to_str, get_words, read_dict

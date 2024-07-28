@@ -20,4 +20,5 @@ from .mono_sub import (
     invert_key,
     mono_sub_likely,
     num_to_letter,
+    swap_random,
 )
