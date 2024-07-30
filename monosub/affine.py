@@ -94,7 +94,6 @@ def output_affine(ciphertext, a, b):
     print("Multiplier:", a)
     print("Shift:", b)
     print("Plaintext:", plaintext)
-    return plaintext
 
 
 def brute_force_affine(ciphertext):
@@ -155,7 +154,7 @@ def crib_affine(ciphertext, crib):
         print("Key not found with crib", crib)
 
 
-def mono_fitness_affine(ciphertext):
+def mono_fitness_affine(ciphertext, output=True):
     expected = get_freq(1)
     poss_texts = {
         (a, b): decipher_affine(ciphertext, a, b)
@@ -167,4 +166,6 @@ def mono_fitness_affine(ciphertext):
         key: mono_fitness(poss_text, expected) for key, poss_text in poss_texts.items()
     }
     a, b = max(fitnesses, key=fitnesses.get)
-    return output_affine(ciphertext, a, b)
+    if output:
+        output_affine(ciphertext, a, b)
+    return [a, b]

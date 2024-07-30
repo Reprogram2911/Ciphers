@@ -1,3 +1,5 @@
+from timeit import Timer
+
 from ciphers.analysis import clean
 from ciphers.monosub.caesar import (
     additive_inverse,
@@ -10,7 +12,7 @@ from ciphers.monosub.caesar import (
 from ciphers.test.utils import get_tests
 
 if __name__ == "__main__":
-    testing = "00000"
+    testing = "000001"
     testing = [int(i) for i in testing]
 
     tests = get_tests("testCaesar.txt")
@@ -53,3 +55,16 @@ if __name__ == "__main__":
         for test in shorts:
             mono_fitness_caesar(test, chi2=True)  # fails
             mono_fitness_caesar(test)  # fails (but second one should pass?)
+
+    if testing[5]:
+        setup = """import random; import ciphers.monosub.caesar as c; i = random.randint(0, 25)"""
+
+        generate_alphabet_caesar
+        generate_alphabet_caesar_2
+
+        for _ in range(5):
+            t1 = Timer("c.generate_alphabet_caesar(i)", setup=setup).repeat(7, 1000)
+            t2 = Timer("c.generate_alphabet_caesar_2(i)", setup=setup).repeat(7, 1000)
+            print(min(t1))
+            print(min(t2))
+            print()

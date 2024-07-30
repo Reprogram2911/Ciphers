@@ -14,7 +14,7 @@ from ciphers.analysis import (
 
 
 def mono_sub_likely(ciphertext):
-    margin = 0.3
+    margin = 0.25
     expected = get_freq(1)
     actual_mono_fitness = mono_fitness(ciphertext, expected)
     low_mono_fitness = abs(actual_mono_fitness - EXPECTED_MONO_FITNESS) > margin

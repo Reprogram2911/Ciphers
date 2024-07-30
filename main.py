@@ -10,7 +10,7 @@ from ciphers.monosub import (
 
 def get_input():
     print("Enter your text: ")
-    return clean(input())
+    return clean(input()).replace(" ", "")
 
 
 def get_confirmation():
@@ -39,12 +39,14 @@ def mono_sub_attacks(text):
     hill_climbing_mono_sub(text)
 
 
-def analyse():
-    text = get_input()
+def analyse(text):
+    # text = get_input()
     if mono_sub_likely(text):
         print("Identified as a monoalphabetic substitution")
         mono_sub_attacks(text)
 
 
 if __name__ == "__main__":
-    analyse()
+    with open("ciphertext.txt", "r") as f:
+        text = clean(f.read()).replace(" ", "")
+    analyse(text)

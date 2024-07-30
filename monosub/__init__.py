@@ -1,4 +1,10 @@
-from .affine import brute_force_affine, decipher_affine, encipher_affine, gcd
+from .affine import (
+    brute_force_affine,
+    decipher_affine,
+    encipher_affine,
+    gcd,
+    mono_fitness_affine,
+)
 from .caesar import (
     brute_force_caesar,
     decipher_caesar,
