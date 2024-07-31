@@ -4,6 +4,7 @@ from .fitness import (
     EXPECTED_MONO_FITNESS,
     EXPECTED_TETRA_FITNESS,
     chi_squared,
+    cos_angle,
     mono_fitness,
     mono_fitness_chi2,
     tetra_fitness,

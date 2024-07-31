@@ -5,11 +5,11 @@ from random import shuffle
 from ciphers.analysis import (
     ALPHABET,
     get_freq,
-    mono_fitness,
     mono_frequencies,
     plot_dict,
     split_into_ngrams,
     split_into_slices,
+    tetra_fitness,
 )
 from ciphers.monosub import (
     decipher_mono_sub,
@@ -92,25 +92,28 @@ def hill_climbing_poly_sub(ciphertext, period=None):
     if period is None:
         period = get_period(ciphertext)
     big_counter = 0
-    expected = get_freq(1)
-    best_fitness = mono_fitness(ciphertext, expected)
+    expected = get_freq(4)
+    best_fitness = tetra_fitness(ciphertext, expected)
     parent_key = [list(ALPHABET) for _ in range(period)]
-    while big_counter < 10:
+    while big_counter < 10e6 * period**2:
         for i in range(period):
-            shuffle(parent_key[i])
+            current = parent_key[i]
+            shuffle(current)
+            parent_key[i] = current
             plaintext_attempt = decipher_poly_sub(ciphertext, parent_key)
-            parent_fitness = mono_fitness(plaintext_attempt, expected)
+            parent_fitness = tetra_fitness(plaintext_attempt, expected)
             little_counter = 0
-            while little_counter < 10:
+            while little_counter < 1000:
                 child_key = deepcopy(parent_key)
                 child_key[i] = swap_random(child_key[i])
                 plaintext_attempt = decipher_poly_sub(ciphertext, child_key)
-                child_fitness = mono_fitness(plaintext_attempt, expected)
+                child_fitness = tetra_fitness(plaintext_attempt, expected)
                 if child_fitness > parent_fitness:
                     parent_key = deepcopy(child_key)
                     parent_fitness = child_fitness
                     little_counter = 0
                 little_counter += 1
+                print(little_counter)
         if child_fitness > best_fitness:
             best_fitness = child_fitness
             best_key = deepcopy(child_key)

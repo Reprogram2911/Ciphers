@@ -68,7 +68,8 @@ def mono_fitness(text, expected):
     for k, v_m in measured.items():
         if k in expected:
             v_e = expected[k]
-            m_list.append(v_m), e_list.append(v_e)
+            m_list.append(v_m)
+            e_list.append(v_e)
     return cos_angle(m_list, e_list)
 
 

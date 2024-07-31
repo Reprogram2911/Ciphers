@@ -44,12 +44,12 @@ def ngram_frequencies(text, n, overlapping=True, divide=True, s=False):
     return freq
 
 
-def mono_frequencies(text, overlapping=True, divide=True, s=False):
-    freq = ngram_frequencies(text, 1, overlapping, divide)
+def mono_frequencies(text, divide=True, s=False):
+    freq = ngram_frequencies(text, 1, divide=divide)
+    for letter in ALPHABET:
+        if letter not in freq:
+            freq[letter] = 0
     if s:
-        for letter in ALPHABET:
-            if letter not in freq:
-                freq[letter] = 0
         return dict_to_str(freq)
     return freq
 

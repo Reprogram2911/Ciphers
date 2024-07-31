@@ -41,4 +41,5 @@ if __name__ == "__main__":
 
     if testing[4]:
         test = tests[6].replace("\n", "")
-        hill_climbing_poly_sub(test, 4)
+        hill_climbing_poly_sub(test, period=4)
+        # TODO: rewrite in C++

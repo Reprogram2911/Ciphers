@@ -89,7 +89,7 @@ def hill_climbing_mono_sub_algorithm(ciphertext, init_key=None, fit_f=tetra_fitn
     return best_fitness, "".join(parent_key)
 
 
-def hill_climbing_mono_sub(ciphertext, init_key=None, fit_f=tetra_fitness):
+def hill_climbing_mono_sub(ciphertext, init_key=None, fit_f=tetra_fitness, output=True):
     counter = 1
     limit = 20
     record = {}
@@ -99,11 +99,13 @@ def hill_climbing_mono_sub(ciphertext, init_key=None, fit_f=tetra_fitness):
             ciphertext, init_key, fit_f
         )
         record[key] = best_fitness
-        print(counter, best_fitness, key)
+        if output:
+            print(counter, best_fitness, key)
         if best_fitness > CUTOFF_TETRA_FITNESS:
             found = True
         if counter == limit:
             key = max(record, key=record.get)
         counter += 1
-    output_mono_sub(ciphertext, key)
+    if output:
+        output_mono_sub(ciphertext, key)
     return key

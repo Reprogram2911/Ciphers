@@ -17,33 +17,37 @@ def remove_duplicates(items):
     return new_items
 
 
+def make_key(items):
+    return "".join(remove_duplicates(items))
+
+
 def fill_key_1(word):
     key = word + ALPHABET
-    return remove_duplicates(key)
+    return make_key(key)
 
 
 def fill_key_2(word):
     key = remove_duplicates(word)
     i = ALPHABET.index(word[-1])
     key += ALPHABET[i:] + ALPHABET[:i]
-    return remove_duplicates(key)
+    return make_key(key)
 
 
 def fill_key_3(word):
     key = remove_duplicates(word)
     i = ALPHABET.index(sorted(word)[-1])
     key += ALPHABET[i:] + ALPHABET[:i]
-    return remove_duplicates(key)
+    return make_key(key)
 
 
 def fill_key_4(word):
     key = word + ALPHABET[::-1]
-    return remove_duplicates(key)
+    return make_key(key)
 
 
 def fill_key_5(word):
     key = ALPHABET + word
-    return remove_duplicates(key)
+    return make_key(key)
 
 
 def generate_alphabet_keyword(keyword, method, invert=False):
